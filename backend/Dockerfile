@@ -12,13 +12,15 @@ RUN npm ci
 #Copy the remaining application source code
 COPY .   .
 
+#create dist folder
+RUN npm run build
 
 #STAGE 2 - production
 
 FROM node:24-bookworm-slim AS production
 
 #Set production environment
-ENV NODE-ENV=production
+ENV NODE_ENV=production
 
 # Set the working directory
 WORKDIR /app
@@ -40,4 +42,4 @@ USER node
 EXPOSE 4000
 
 #Start the application
-CMD [ "node","dist/index.js" ]
+CMD [ "node","dist/main.js" ]
