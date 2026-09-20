@@ -35,6 +35,10 @@ RUN npm ci --omit=dev && npm cache clean --force
 #copy compiles application
 COPY --from=builder  /app/dist  ./dist
 
+#Copy Prisma client and Schema
+COPY --from=builder /app/generated ./generated
+COPY --from=builder /app/prisma   ./prisma
+
 #Run as non-root user
 USER node
 
