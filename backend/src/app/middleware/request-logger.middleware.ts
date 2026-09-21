@@ -7,7 +7,7 @@ export const requestLogger = (
   next: NextFunction,
 ) => {
   const start = process.hrtime.bigint();
-  process.on("finish", () => {
+  res.on("finish", () => {
     const duration = Number(process.hrtime.bigint() - start) / 1_000_000;
     logger.info({
       event: "HTTP_REQUEST",
