@@ -1,7 +1,8 @@
+import "reflect-metadata";
+import "./infrastructure/container/index.js";
 import { bootstrap } from "./app/bootstrap.js";
 import { createServer } from "./app/server.js";
 import { shutdown } from "./app/shutdown.js";
-
 import { logger } from "./config/logger.js";
 
 const start = async (): Promise<void> => {
