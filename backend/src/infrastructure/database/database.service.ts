@@ -2,22 +2,34 @@ import { injectable, inject } from "tsyringe";
 import { registerQueryLogger } from "./query-logger.js";
 import { InfrastructureTokens } from "../container/index.js";
 import type { PrismaClient } from "../../../generated/prisma/client.js";
-import type { Logger } from "pino";
+
+import type { ILogger } from "../../shared/logger/logger.interface.js";
+import { LoggerFactory } from "../observeability/logger/logger.factory.js";
 @injectable()
 export class DatabaseService {
   constructor(
     @inject(InfrastructureTokens.PrismaClient)
     private readonly prisma: PrismaClient,
-    @inject(InfrastructureTokens.Logger) private readonly logger: Logger,
-  ) {}
+    @inject(InfrastructureTokens.Logger) private readonly logger: ILogger,
+    loggerFactory: LoggerFactory,
+  ) {
+    this.logger = loggerFactory.create({
+      component: "DatabaseService",
+      module: "infrastructure",
+    });
+  }
   connectDatabase = async (): Promise<void> => {
     try {
-      this.logger.info("Connecting to the database");
+      this.logger.info("Connecting to the database", {
+        event: "DATABASE_CONNECTED",
+        component: "database",
+        operation: "connect",
+      });
       registerQueryLogger();
       await this.prisma.$connect();
       this.logger.info("Connected to the database successfully");
-    } catch (error) {
-      this.logger.fatal({ error }, "Fail to connect to database");
+    } catch (error: unknown) {
+      this.logger.fatal("Fail to connect to database", error);
       throw error;
     }
   };
@@ -28,7 +40,22 @@ export class DatabaseService {
       await this.prisma.$disconnect();
       this.logger.info("Disconnected to the database successfully");
     } catch (error) {
-      this.logger.fatal({ error }, "Fail to disconnect from the database");
+      this.logger.fatal("Fail to disconnect from the database", error);
+    }
+  };
+  checkDatabaseHealth = async () => {
+    try {
+      const start = process.hrtime.bigint();
+      await this.prisma.$queryRaw`SELECT 1`;
+      const latency = Number(process.hrtime.bigint() - start) / 1_000_000;
+      return {
+        status: "healthy",
+        latency,
+      };
+    } catch (error) {
+      return {
+        status: "unhealthy",
+      };
     }
   };
 }

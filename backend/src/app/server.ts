@@ -1,8 +1,13 @@
+import { container } from "tsyringe";
 import { env } from "../config/env.config.js";
-import { logger } from "../config/logger.js";
+
 import { app } from "./app.js";
+
+import { ILogger } from "../shared/logger/logger.interface.js";
+import { InfrastructureTokens } from "../infrastructure/container/index.js";
 const port = env.PORT;
 export const createServer = () => {
+  const logger = container.resolve<ILogger>(InfrastructureTokens.Logger);
   const server = app.listen(port, () => {
     logger.info(`Server running on PORT:${port}`);
   });
