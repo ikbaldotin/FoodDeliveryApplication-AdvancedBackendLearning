@@ -9,4 +9,5 @@ export const InfrastructureTokens = {
   CacheService: Symbol.for("Infrastructure.CacheService"),
   ApiService: Symbol.for("Infrastructure.ApiService"),
   HealthService: Symbol.for("Infrastructure.HealthService"),
+  RequestContextService: Symbol.for("Infrastructure.RequestContextService"),
 } as const;
