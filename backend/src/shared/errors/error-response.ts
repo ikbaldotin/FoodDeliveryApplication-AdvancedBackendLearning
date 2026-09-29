@@ -1,9 +1,15 @@
+export interface ValidationError {
+  path: string;
+  message: string;
+}
+export interface ErrorDetails {
+  code: string;
+  message: string;
+  details?: ValidationError[];
+}
 export interface ErrorResponse {
   success: false;
-  error: {
-    code: string;
-    message: string;
-  };
+  error: ErrorDetails;
   requestId?: string;
   correlationId?: string;
   timestamp?: string;

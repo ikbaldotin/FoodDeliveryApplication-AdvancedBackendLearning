@@ -9,6 +9,8 @@ import type {
 } from "express";
 import { AppError } from "../../shared/errors/AppError.js";
 import type { Env } from "../../config/env.schema.js";
+import { InternalServerError } from "../../shared/errors/InternalServerError.js";
+import { ErrorSerializer } from "../../shared/errors/error-serializer.js";
 
 @injectable()
 export class ErrorHandlerMiddleware {
@@ -21,7 +23,7 @@ export class ErrorHandlerMiddleware {
     error: Error & {
       isOperational?: boolean;
     },
-    req: Request,
+    _req: Request,
     res: Response,
     next: NextFunction,
   ): void => {
@@ -29,38 +31,28 @@ export class ErrorHandlerMiddleware {
       next(error);
       return;
     }
-    if (error instanceof AppError) {
-      this.logger.warn(error.message, {
+    const appError =
+      error instanceof AppError
+        ? error
+        : new InternalServerError(
+            this.env.NODE_ENV === "production"
+              ? "an unexpected error occurred"
+              : error.message,
+          );
+    if (appError.isOperational) {
+      this.logger.warn(appError.message, {
         component: "ErrorHandler",
         operation: "handle",
-        errorCode: error.code,
-        statusCode: error.statusCode,
-        isOperational: error.isOperational,
+        error: AppError,
+        errorCode: appError.code,
+        statusCode: appError.statusCode,
       });
-      res.status(error.statusCode).json({
-        success: false,
-        error: {
-          code: error.code,
-          message: error.message,
-        },
+    } else {
+      this.logger.error(appError.message, appError, {
+        component: "ErrorHandler",
+        operation: "handle",
       });
-      return;
     }
-    this.logger.error("Unhandled exception", error, {
-      component: "ErrorHandler",
-      operation: "handle",
-    });
-    res.status(500).json({
-      success: false,
-      error: {
-        code: "INTERNAL_SERVER_ERROR",
-        message:
-          this.env.NODE_ENV === "production"
-            ? "an unexpected error ocurred."
-            : error instanceof Error
-              ? error.message
-              : "Unknown error",
-      },
-    });
+    res.status(appError.statusCode).json(ErrorSerializer.serialize(appError));
   };
 }
