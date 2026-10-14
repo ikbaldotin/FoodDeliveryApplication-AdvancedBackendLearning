@@ -44,7 +44,7 @@ export class User {
   public getPasswordHash(): PasswordHash {
     return this.passwordHash;
   }
-  public getRole(): Role[] {
+  public getRoles(): Role[] {
     return [...this.roles];
   }
   public getStatus(): UserStatus {
