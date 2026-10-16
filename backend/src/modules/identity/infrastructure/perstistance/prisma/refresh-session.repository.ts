@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { IRefreshSessionRepository } from "../../../domain/repositories/refresh-session.repository.js";
-import { InfrastructureTokens } from "../../../../../infrastructure/container/index.js";
+import { InfrastructureTokens } from "../../../../../infrastructure/container/tokens/infrastructure.tokens.js";
 import { PrismaClient } from "../../../../../../generated/prisma/index.js";
 import { RefreshSession } from "../../../domain/entities/refresh-session.entities.js";
 import { RefreshSessionMapper } from "./mappers/refresh-session.mapper.js";
