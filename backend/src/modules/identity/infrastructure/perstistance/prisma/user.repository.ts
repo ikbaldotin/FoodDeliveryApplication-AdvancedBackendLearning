@@ -1,10 +1,13 @@
 import { injectable, inject } from "tsyringe";
 import { IUserRepository } from "../../../domain/repositories/user.repository.js";
-import { InfrastructureTokens } from "../../../../../infrastructure/container/index.js";
+import { InfrastructureTokens } from "../../../../../infrastructure/container/tokens/infrastructure.tokens.js";
 
 import { User } from "../../../domain/entities/index.js";
 import { UserMapper } from "./mappers/user.mapper.js";
-import { PrismaClient } from "../../../../../../generated/prisma/index.js";
+import {
+  PrismaClient,
+  Role as PrismaRole,
+} from "../../../../../../generated/prisma/index.js";
 import { Email } from "../../../domain/value-objects/email.vo.js";
 @injectable()
 export class UserRepository implements IUserRepository {
@@ -20,7 +23,7 @@ export class UserRepository implements IUserRepository {
         id: data.id,
         email: data.email.getValue(),
         passwordHash: data.passwordHash.getValue(),
-        role: data.roles,
+        roles: data.roles.map((role) => role as PrismaRole),
         status: data.status,
         emailVerified: data.emailVerified,
         createdAt: data.createdAt,
@@ -71,7 +74,7 @@ export class UserRepository implements IUserRepository {
       data: {
         email: data.email.getValue(),
         passwordHash: data.passwordHash.getValue(),
-        role: data.roles,
+        roles: data.roles.map((role) => role as PrismaRole),
         status: data.status,
         emailVerified: data.emailVerified,
       },

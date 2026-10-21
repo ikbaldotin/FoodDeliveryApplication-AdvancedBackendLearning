@@ -37,7 +37,7 @@ export const ROLE_PERMISSIONS: Readonly<Record<Role, readonly Permission[]>> = {
     Permission.ORDER_UPDATE,
     Permission.ORDER_CANCEL,
   ],
-  [Role.RESTURANT_OWNER]: [
+  [Role.RESTAURANT_OWNER]: [
     Permission.RESTAURANT_CREATE,
     Permission.RESTAURANT_READ,
     Permission.RESTAURANT_UPDATE,

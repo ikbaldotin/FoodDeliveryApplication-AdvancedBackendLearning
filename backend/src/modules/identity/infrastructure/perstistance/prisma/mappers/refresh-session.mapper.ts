@@ -9,7 +9,7 @@ export class RefreshSessionMapper {
       tokenHash: prismaRefreshSession.tokenHash,
       expiresAt: prismaRefreshSession.expiresAt,
       lastUseAt: prismaRefreshSession.lastUsedAt,
-      revokedAt: prismaRefreshSession.expiresAt,
+      revokedAt: prismaRefreshSession.revokedAt,
       ipAddress: prismaRefreshSession.ipAddress,
       userAgent: prismaRefreshSession.userAgent,
       createdAt: prismaRefreshSession.createdAt,
