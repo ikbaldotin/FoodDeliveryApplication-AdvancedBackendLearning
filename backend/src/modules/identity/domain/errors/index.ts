@@ -9,3 +9,4 @@ export * from "./refresh-session-not-found.error.js";
 export * from "./refresh-session-revoked.error.js";
 export * from "./refresh-session-revoked.error.js";
 export * from "./role-not-assign.error.js";
+export * from "./refresh-subject-missing.error.js";
