@@ -6,6 +6,7 @@ export class AppError extends Error {
     public readonly isOperational?: boolean,
   ) {
     super(message);
+    Object.setPrototypeOf(this, new.target.prototype);
     this.name = this.constructor.name;
   }
 }

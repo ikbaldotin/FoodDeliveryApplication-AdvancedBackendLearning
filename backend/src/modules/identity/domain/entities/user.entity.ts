@@ -35,6 +35,31 @@ export class User {
     this.createdAT = params.createdAt ?? new Date();
     this.updatedAt = params.updatedAt ?? new Date();
   }
+  public static create(params: { email: Email; password: PasswordHash }): User {
+    const now = new Date();
+    return new User({
+      id: crypto.randomUUID(),
+      email: params.email,
+      passwordHash: params.password,
+      roles: [Role.CUSTOMER],
+      status: UserStatus.ACTIVE,
+      emailVerified: false,
+      createdAt: now,
+      updatedAt: now,
+    });
+  }
+  public static rehydrate(params: {
+    id: string;
+    email: Email;
+    passwordHash: PasswordHash;
+    roles: Iterable<Role>;
+    status: UserStatus;
+    emailVerified: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  }): User {
+    return new User(params);
+  }
   public getId(): string {
     return this.id;
   }

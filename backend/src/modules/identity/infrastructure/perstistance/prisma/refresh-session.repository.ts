@@ -1,14 +1,14 @@
 import { inject, injectable } from "tsyringe";
 import { IRefreshSessionRepository } from "../../../domain/repositories/refresh-session.repository.js";
 import { InfrastructureTokens } from "../../../../../infrastructure/container/tokens/infrastructure.tokens.js";
-import { PrismaClient } from "../../../../../../generated/prisma/index.js";
 import { RefreshSession } from "../../../domain/entities/refresh-session.entities.js";
 import { RefreshSessionMapper } from "./mappers/refresh-session.mapper.js";
+import type { PrismaExecutor } from "../../../../../infrastructure/database/prisma-client.type.js";
 @injectable()
 export class RefreshSessionRepository implements IRefreshSessionRepository {
   constructor(
     @inject(InfrastructureTokens.PrismaClient)
-    private readonly prisma: PrismaClient,
+    private readonly prisma: PrismaExecutor,
   ) {}
   async create(refresh: RefreshSession): Promise<RefreshSession> {
     const data = RefreshSessionMapper.toPersistance(refresh);

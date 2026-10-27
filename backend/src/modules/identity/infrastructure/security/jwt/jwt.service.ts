@@ -1,4 +1,4 @@
-import { injectable, inject } from "tsyringe";
+import { injectable } from "tsyringe";
 import { IJWTService } from "../../../domain/services/jwt.service.js";
 import { JwtTokenFactory } from "./jwt.token-factory.js";
 import { JWTTokenVerifier } from "./jwt.token-verifier.js";

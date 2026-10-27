@@ -11,6 +11,7 @@ import { AppError } from "../../shared/errors/AppError.js";
 import type { Env } from "../../config/env.schema.js";
 import { InternalServerError } from "../../shared/errors/InternalServerError.js";
 import { ErrorSerializer } from "../../shared/errors/error-serializer.js";
+import { mapError } from "../../shared/errors/error-mapper.js";
 
 @injectable()
 export class ErrorHandlerMiddleware {
@@ -31,14 +32,8 @@ export class ErrorHandlerMiddleware {
       next(error);
       return;
     }
-    const appError =
-      error instanceof AppError
-        ? error
-        : new InternalServerError(
-            this.env.NODE_ENV === "production"
-              ? "an unexpected error occurred"
-              : error.message,
-          );
+    const appError = mapError(error, this.env.NODE_ENV === "production");
+
     if (appError.isOperational) {
       this.logger.warn(appError.message, {
         component: "ErrorHandler",
