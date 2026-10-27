@@ -7,6 +7,7 @@ import { HttpLogger } from "../infrastructure/observeability/logger/http.logger.
 import { RequestContextMiddleware } from "../infrastructure/observeability/request-context/request-context.middleware.js";
 import { ErrorHandlerMiddleware } from "./middleware/error-handler.middleware.js";
 import { registerSecurity } from "../infrastructure/security/security.js";
+import identityRouter from "../modules/identity/presentation/routes/identity-route.js";
 export const app = express();
 registerSecurity(app);
 const requestContextMiddleware = container.resolve(RequestContextMiddleware);
@@ -15,5 +16,6 @@ app.use(requestContextMiddleware.handle);
 const httpLogger = container.resolve(HttpLogger);
 app.use(httpLogger.middleware);
 app.use("/", healthRouter);
+app.use("/api/v1/identity", identityRouter);
 const errorHandler = container.resolve(ErrorHandlerMiddleware);
 app.use(errorHandler.handle);

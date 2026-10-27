@@ -4,16 +4,14 @@ import { InfrastructureTokens } from "../../../../../infrastructure/container/to
 
 import { User } from "../../../domain/entities/index.js";
 import { UserMapper } from "./mappers/user.mapper.js";
-import {
-  PrismaClient,
-  Role as PrismaRole,
-} from "../../../../../../generated/prisma/index.js";
+import { Role as PrismaRole } from "../../../../../../generated/prisma/index.js";
 import { Email } from "../../../domain/value-objects/email.vo.js";
+import type { PrismaExecutor } from "../../../../../infrastructure/database/prisma-client.type.js";
 @injectable()
 export class UserRepository implements IUserRepository {
   constructor(
     @inject(InfrastructureTokens.PrismaClient)
-    private readonly prisma: PrismaClient,
+    private readonly prisma: PrismaExecutor,
   ) {}
 
   async create(user: User): Promise<User> {
